@@ -2,13 +2,15 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import mysql from 'mysql';
+import Path from 'path';
 
 dotenv.config();  // Loads environment variables from the .env file
 
 const app = express();
+const _dirname=Path.resolve();
 
 app.use(cors());
-app.use(express.static('dist'));
+app.use(express.static(Path.join(_dirname,"/frontend/dist")));
 
 // Create MySQL connection
 const db = mysql.createConnection({
@@ -38,6 +40,10 @@ app.get('/api/jokes', (req, res) => {
     res.json(results);  // Send the fetched jokes as the response
   });
 });
+
+app.get('*',(req,res)=>{
+  res.sendFile(Path.resolve(_dirname,"frontend","dist","index.html"))
+})
 
 const port = process.env.PORT || 4000;  // Fallback to 4000 if PORT is not defined
 
